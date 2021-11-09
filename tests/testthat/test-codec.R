@@ -4,7 +4,7 @@ test_that("encode works", {
     sf_col = sf::st_sfc(sf::st_point(c(0, 0)), crs = 4326)
   )
 
-  encoded_df <- encode(df)
+  encoded_df <- encode_wkb(df)
 
   # preserve attributes
   expect_equal(attributes(encoded_df), attributes(df))
@@ -34,7 +34,7 @@ test_that("decode works", {
     sf_col = wkb_col
   )
 
-  decoded_df <- decode(encoded_df)
+  decoded_df <- decode_wkb(encoded_df)
 
   # attributes preserved
   expect_equal(attributes(decoded_df), attributes(encoded_df))

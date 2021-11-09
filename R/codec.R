@@ -1,15 +1,23 @@
-encode <- function(data) {
-  UseMethod("encode")
+#' Encode WKB
+#'
+#' Encodes simple features columns (`sfc`) as well-known binary (WKB) blob
+#' columns and stores crs as attributes on these vectors. This allows for
+#' serialisation to parquet, ipc_stream and feather.
+#' @name encode_wkb
+#' @param data <`any`> The input object
+#'
+#' @author Anthony North
+#' @export
+encode_wkb <- function(data) {
+  UseMethod("encode_wkb")
 }
 
-#' default -> identity
-#' @noRd
-encode.default <- function(data) data
+#' @export
+encode_wkb.default <- function(data) data
 
-#' convert all sfc columns to wkb
 #' @global where
-#' @noRd
-encode.data.frame <- function(data) {
+#' @export
+encode_wkb.data.frame <- function(data) {
   is_sfc <- \(col) inherits(col, "sfc")
 
   # convert to wkb, patch class for arrow, add crs
@@ -27,19 +35,29 @@ encode.data.frame <- function(data) {
     dplyr::mutate(dplyr::across(where(is_sfc), as_wkb))
 }
 
-decode <- function(data) {
-  UseMethod("decode")
+#' Decode WKB
+#'
+#' Decodes well-known binary (WKB) blob columns as simple features columns
+#' (`sfc`). This function is useful for decoding wkb columns that were
+#' previously encoded with [encode_wkb()].
+#'
+#' Well-known binary columns are identified by their `wkb` attribute.
+#' @name decode_wkb
+#' @param data <`any`> The input object
+#'
+#' @author Anthony North
+#' @export
+decode_wkb <- function(data) {
+  UseMethod("decode_wkb")
 }
 
-#' default -> identity
-#' @noRd
-decode.default <- function(data) data
+#' @export
+decode_wkb.default <- function(data) data
 
-#' convert all wkb columns to sfc
 #' @global where
-#' @noRd
-decode.data.frame <- function(data) {
-  is_sfc <- function(col) attr(col, "wkb") %||% FALSE
+#' @export
+decode_wkb.data.frame <- function(data) {
+  is_sfc <- \(col) attr(col, "wkb") %||% FALSE
   from_wkb <- \(col) sf::st_as_sfc(col, crs = attr(col, "crs"))
 
   data |>

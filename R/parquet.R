@@ -10,11 +10,11 @@ patch_parquet <- once(function() {
   read_parquet <- arrow::read_parquet
 
   assignInNamespace("write_parquet", ns = "arrow", function(x, ...) {
-    write_parquet(encode(x), ...)
+    write_parquet(encode_wkb(x), ...)
   })
 
   assignInNamespace("read_parquet", ns = "arrow", function(...) {
     read_parquet(...) |>
-      decode()
+      decode_wkb()
   })
 })
