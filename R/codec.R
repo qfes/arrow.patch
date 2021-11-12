@@ -63,3 +63,11 @@ decode_wkb.data.frame <- function(data) {
   data |>
     dplyr::mutate(dplyr::across(where(is_sfc), from_wkb))
 }
+
+#' @export
+decode_wkb.sf <- function(data) {
+  data |>
+    drop_class("sf") |>
+    decode_wkb.data.frame() |>
+    add_class("sf")
+}

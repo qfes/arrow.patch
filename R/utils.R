@@ -10,6 +10,9 @@ once <- function(fn) {
 }
 
 add_class <- \(obj, new_class) `class<-`(obj, c(new_class, class(obj)))
+drop_class <- \(obj, old_class) `class<-`(obj, setdiff(class(obj), old_class))
+set_class <- `class<-`
+
 set_attr <- `attr<-`
 
 `%||%` <- \(x, y) if (is.null(x)) y else x
