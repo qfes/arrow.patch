@@ -2,6 +2,7 @@
 
 S3method(decode_wkb,data.frame)
 S3method(decode_wkb,default)
+S3method(decode_wkb,sf)
 S3method(encode_wkb,data.frame)
 S3method(encode_wkb,default)
 export(decode_wkb)

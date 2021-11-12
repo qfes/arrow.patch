@@ -57,9 +57,16 @@ decode_wkb.default <- function(data) data
 #' @global where
 #' @export
 decode_wkb.data.frame <- function(data) {
+  print(class(data))
   is_sfc <- \(col) attr(col, "wkb") %||% FALSE
   from_wkb <- \(col) sf::st_as_sfc(col, crs = attr(col, "crs"))
 
   data |>
     dplyr::mutate(dplyr::across(where(is_sfc), from_wkb))
+}
+
+#' @export
+decode_wkb.sf <- function(data) {
+  NextMethod() |>
+    sf::st_sf(sf_column_name = attr(data, "sf_column"))
 }
