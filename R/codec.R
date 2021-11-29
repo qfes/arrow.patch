@@ -15,6 +15,14 @@ encode_wkb <- function(data) {
 #' @export
 encode_wkb.default <- function(data) data
 
+#' @export
+encode_wkb.sf <- function(data) {
+  data |>
+    drop_class("sf") |>
+    encode_wkb.data.frame() |>
+    add_class("sf")
+}
+
 #' @global where
 #' @export
 encode_wkb.data.frame <- function(data) {
@@ -32,7 +40,7 @@ encode_wkb.data.frame <- function(data) {
 
   # convert all sfc columns (if there are any) to wkb
   data |>
-    dplyr::mutate(dplyr::across(where(is_sfc), as_wkb))
+    mutate_where(is_sfc, as_wkb)
 }
 
 #' Decode WKB
@@ -61,7 +69,7 @@ decode_wkb.data.frame <- function(data) {
   from_wkb <- \(col) sf::st_as_sfc(col, crs = attr(col, "crs"))
 
   data |>
-    dplyr::mutate(dplyr::across(where(is_sfc), from_wkb))
+  mutate_where(is_sfc, from_wkb)
 }
 
 #' @export
@@ -70,4 +78,22 @@ decode_wkb.sf <- function(data) {
     drop_class("sf") |>
     decode_wkb.data.frame() |>
     add_class("sf")
+}
+
+mutate_where <- function(a_df, where, fn) {
+  col_names <- colnames(a_df)
+  lapply(col_names, function(col_name) {
+    if (where(a_df[[col_name]])) a_df[[col_name]] <<- fn(a_df[[col_name]])
+    }
+  )
+  a_df
+}
+
+function() {
+  library(qfesdata)
+  stations <- get_stations()
+  attr(stations, "test") <- "foo"
+  updated <- mutate_where(stations, is_sfc, as_wkb)
+  attributes(updated$admin_area)
+  attributes(updated)
 }

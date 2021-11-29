@@ -3,11 +3,11 @@ test_that("encode works", {
     other_col = 1,
     sf_col = sf::st_sfc(sf::st_point(c(0, 0)), crs = 4326)
   )
-
+  sf_df <- sf::st_as_sf(df)
   encoded_df <- encode_wkb(df)
 
   # preserve attributes
-  expect_equal(attributes(encoded_df), attributes(df))
+  expect_mapequal(attributes(encoded_df), attributes(df))
 
   # non-sfc cols unchanged
   expect_equal(encoded_df$other_col, df$other_col)
@@ -37,7 +37,7 @@ test_that("decode works", {
   decoded_df <- decode_wkb(encoded_df)
 
   # attributes preserved
-  expect_equal(attributes(decoded_df), attributes(encoded_df))
+  expect_mapequal(attributes(decoded_df), attributes(encoded_df))
 
   # non-sfc cols unchanged
   expect_equal(encoded_df$other_col, decoded_df$other_col)
