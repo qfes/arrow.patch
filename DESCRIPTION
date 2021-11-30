@@ -14,7 +14,6 @@ RoxygenNote: 7.1.2
 Imports:
     arrow,
     blob,
-    dplyr,
     sf
 Collate:
     'arrow.patch-package.R'
@@ -24,7 +23,8 @@ Collate:
     'parquet.R'
 Suggests:
     roxyglobals (>= 0.2.1),
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    dplyr
 Config/testthat/edition: 3
 Remotes:
     anthonynorth/roxyglobals
