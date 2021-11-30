@@ -1,6 +1,6 @@
 Package: arrow.patch
 Title: Patch Arrow Functions for Serialising SF Columns
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: c(
     person(given = "Anthony", family = "North", role = c("aut", "cre"), email = "anthony.north@qfes.qld.gov.au"),
     person(given = "Miles", family = "McBain", role = c("ctb"), email = "miles.mcbain@qfes.qld.gov.au", comment = c(ORCID = "0000-0003-2865-2548")))
@@ -14,7 +14,8 @@ RoxygenNote: 7.1.2
 Imports:
     arrow,
     blob,
-    sf
+    sf,
+    dplyr
 Collate:
     'arrow.patch-package.R'
     'codec.R'
@@ -23,8 +24,7 @@ Collate:
     'parquet.R'
 Suggests:
     roxyglobals (>= 0.2.1),
-    testthat (>= 3.0.0),
-    dplyr
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Remotes:
     anthonynorth/roxyglobals

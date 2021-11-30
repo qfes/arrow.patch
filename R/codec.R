@@ -38,6 +38,13 @@ encode_wkb.data.frame <- function(data) {
       set_attr("wkb", TRUE)
   }
 
+  if (dplyr::is.grouped_df(data)) {
+    stop("You're attempting to encode grouped data with {arrow}, which will cause attributes to be lost.",
+    " Drop the groups to proceed.")
+    # An unfortunate arrow issue, see:
+    # https://issues.apache.org/jira/browse/ARROW-14919
+  }
+
   # convert all sfc columns (if there are any) to wkb
   data |>
     mutate_where(is_sfc, as_wkb)
@@ -69,7 +76,7 @@ decode_wkb.data.frame <- function(data) {
   from_wkb <- \(col) sf::st_as_sfc(col, crs = attr(col, "crs"))
 
   data |>
-  mutate_where(is_sfc, from_wkb)
+    mutate_where(is_sfc, from_wkb)
 }
 
 #' @export
@@ -82,18 +89,11 @@ decode_wkb.sf <- function(data) {
 
 mutate_where <- function(a_df, where, fn) {
   col_names <- colnames(a_df)
-  lapply(col_names, function(col_name) {
-    if (where(a_df[[col_name]])) a_df[[col_name]] <<- fn(a_df[[col_name]])
+  lapply(
+    col_names,
+    function(col_name) {
+      if (where(a_df[[col_name]])) a_df[[col_name]] <<- fn(a_df[[col_name]])
     }
   )
   a_df
-}
-
-function() {
-  library(qfesdata)
-  stations <- get_stations()
-  attr(stations, "test") <- "foo"
-  updated <- mutate_where(stations, is_sfc, as_wkb)
-  attributes(updated$admin_area)
-  attributes(updated)
 }

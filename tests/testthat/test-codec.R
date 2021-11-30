@@ -20,6 +20,13 @@ test_that("encode works", {
   expect_true(attr(encoded_df$sf_col, "wkb"))
 })
 
+test_that("encode grouped fails", {
+ expect_error(
+   mtcars |>
+   dplyr::group_by(cyl) |>
+   encode_wkb(), "You're attempting to encode grouped")
+})
+
 test_that("decode works", {
   sf_col <- sf::st_sfc(sf::st_point(c(0, 0)), crs = 4326)
   # encode as wkb
